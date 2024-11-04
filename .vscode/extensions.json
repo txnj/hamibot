@@ -1,0 +1,31 @@
+{
+	"recommendations": [
+		// python
+		"ms-python.python",
+		"ms-python.vscode-pylance",
+		"charliermarsh.ruff",
+		"VisualStudioExptTeam.vscodeintellicode",
+		"ms-toolsai.jupyter",
+		"njpwerner.autodocstring",
+		// 通用
+		"esbenp.prettier-vscode",
+		"tamasfe.even-better-toml",
+		"TheNuProjectContributors.vscode-nushell-lang",
+		// 美化
+		"oderwat.indent-rainbow",
+		"mechatroner.rainbow-csv",
+		"liviuschera.noctis",
+		// 工具
+		"vscode-icons-team.vscode-icons",
+		"alefragnani.project-manager",
+		"Gruntfuggly.todo-tree",
+		"mhutchie.git-graph",
+		"adamhartford.vscode-base64",
+		"formulahendry.code-runner",
+		// react
+		"bradlc.vscode-tailwindcss",
+		"dbaeumer.vscode-eslint",
+		"burkeholland.simple-react-snippets",
+		"jock.svg"
+	]
+}

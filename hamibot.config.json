@@ -1,0 +1,12 @@
+{
+    "fileMark": {
+        "scriptFile": "src/index.js",
+        "configFile": "src/config.json"
+    },
+    "name": "hamibot",
+    "scriptId": "67277df0e2fed0e6e3f79c9d",
+    "executeRobot": {
+        "_id": "67244fb3e2fed0e6e3d2dd27",
+        "name": "ace3 pro"
+    }
+}

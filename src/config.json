@@ -1,0 +1,11 @@
+[
+    {
+        "label": "显示控制台(需要悬浮窗权限)",
+        "type": "select",
+        "name": "SHOW_CONSOLE",
+        "options": {
+            "true": "是",
+            "false": "否"
+        }
+    }
+]

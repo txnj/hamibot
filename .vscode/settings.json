@@ -1,0 +1,96 @@
+{
+	"editor.fontSize": 14,
+	"editor.fontFamily": "'MesloLGS Nerd Font Mono',Consolas,'Courier New',monospace",
+	// 📝powershelel配置
+	"terminal.integrated.profiles.windows": {
+		"pwsh": {
+			"path": "c:/scoop/shims/pwsh.exe",
+			"args": [],
+			"icon": "terminal-powershell"
+		},
+		"nu": {
+			"path": "c:/scoop/shims/nu.exe",
+			"args": []
+		}
+	},
+	"terminal.integrated.defaultProfile.windows": "nu",
+	"window.commandCenter": false,
+	"git.autofetch": true,
+	"terminal.integrated.automationProfile.windows": {
+		"path": "c:/scoop/shims/pwsh.exe",
+		"args": []
+	},
+	// "terminal.integrated.defaultProfile.windows": "nu", //nushell
+	// 📝toml格式化配置
+	"evenBetterToml.formatter.indentTables": true, // table缩进
+	"evenBetterToml.formatter.indentEntries": true, // entries缩进
+	"evenBetterToml.formatter.alignComments": false, // 垂直对齐comments
+	"evenBetterToml.formatter.alignEntries": true, // 垂直对齐entries
+	"evenBetterToml.formatter.reorderKeys": true, // 按字母顺序对不以空行分隔的键重新排序
+	"evenBetterToml.formatter.reorderArrays": false, // 按字母顺序对不以空行分隔的键重新排序
+	"evenBetterToml.formatter.compactEntries": false, // 省略 `=` 周围的空格
+	"evenBetterToml.formatter.arrayTrailingComma": true, // 为多行数组添加尾随逗号
+	"evenBetterToml.formatter.arrayAutoExpand": true, // 自动将数组扩展为多行
+	// 📝ruff
+	"ruff.fixAll": true,
+	"[python]": {
+		// 📝yapf配置(格式化工具)
+		// "editor.defaultFormatter": "eeyore.yapf",
+		"editor.defaultFormatter": "charliermarsh.ruff",
+		"editor.formatOnSave": true,
+		"editor.codeActionsOnSave": {
+			"source.fixAll.ruff": "explicit", // 保存时自动修复可修复的 lint 错误
+			"source.organizeImports.ruff": "explicit" // 保存时自动排序 import 语句
+		}
+	},
+	"python.analysis.extraPaths": [],
+	// 📝jupyter.notebook
+	"jupyter.notebookFileRoot": "${workspaceFolder}", // 📌
+	"notebook.defaultFormatter": "charliermarsh.ruff",
+	"notebook.formatOnSave.enabled": true, // notebook 保存时自动格式化
+	"notebook.output.textLineLimit": 18,
+	"notebook.codeActionsOnSave": {
+		"notebook.source.fixAll": "explicit", // notebook 保存时自动修复可修复的 lint 错误
+		"notebook.source.organizeImports": "explicit" // notebook 保存时自动排序 import 语句
+	},
+	"editor.formatOnSave": true, // 保存时格式化
+	// prettier配置
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"prettier.tabWidth": 4,
+	"prettier.bracketSpacing": true,
+	"prettier.printWidth": 80,
+	"prettier.useTabs": true, //使用制表符而不是空格缩进行
+	// 📝彩虹缩进 indent-rainbow 配置
+	"indentRainbow.ignoreErrorLanguages": ["python", "typescriptreact", "yaml"],
+	// 📝env
+	"python.envFile": "${workspaceFolder}/.env",
+	"terminal.integrated.env.windows": {
+		"PYTHONPATH": "${workspaceFolder}"
+	},
+	"terminal.integrated.env.linux": {
+		"PYTHONPATH": "${workspaceFolder}"
+	},
+	"terminal.integrated.env.osx": {
+		"PYTHONPATH": "${workspaceFolder}"
+	},
+	// 📝code-runner
+	"code-runner.clearPreviousOutput": true,
+	"code-runner.executorMap": {
+		"python": "set PYTHONPATH=. && python -u",
+		"typescript": "node --loader ts-node/esm --disable-warning=ExperimentalWarning"
+	},
+	"json.format.enable": true,
+	"workbench.iconTheme": "vscode-icons",
+	"workbench.colorTheme": "Kimbie Dark",
+	"terminal.integrated.enableMultiLinePasteWarning": "auto",
+	// 📝vscode自带css规则配置
+	"css.validate": true,
+	"css.lint.unknownAtRules": "ignore", // 忽略未知的 @ 规则
+	"css.lint.unknownProperties": "warning", // 对未知的属性发出警告
+	"css.lint.vendorPrefix": "warning", // 对供应商前缀发出警告
+	"css.lint.duplicateProperties": "error", // 对重复的属性发出错误
+	"css.lint.emptyRules": "warning",
+	"[svg]": {
+		"editor.defaultFormatter": "jock.svg"
+	} // 对空规则发出警告
+}
