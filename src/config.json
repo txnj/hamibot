@@ -1,11 +1,19 @@
 [
-    {
-        "label": "显示控制台(需要悬浮窗权限)",
-        "type": "select",
-        "name": "SHOW_CONSOLE",
-        "options": {
-            "true": "是",
-            "false": "否"
-        }
-    }
+	{
+		"label": "屏幕分辨率(宽)",
+		"name": "screenWidth",
+		"placeholder": "1080",
+		"validation": "required"
+	},
+	{
+		"label": "屏幕分辨率(高)",
+		"name": "screenHeight",
+		"placeholder": "2376",
+		"validation": "required"
+	},
+	{
+		"label": "显示控制台(需要悬浮窗权限)",
+		"type": "checkbox",
+		"name": "isDebug"
+	}
 ]

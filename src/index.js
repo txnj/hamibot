@@ -8,47 +8,49 @@ const ROOM_LIST_POS = [0, 264, 1080, 600]; // 检查是否成功参与抽奖
 const TOP_LIST_POS = [0, 120, 1080, 252]; // 顶部列表
 const MAX_WAIT_TIME = 300; // 最大等待时间
 const PRIZE_PRICE_MIN = 600; // 奖品最小参考价值,低于此值则不参与抽奖
-const MAX_RETRY = 3; // 重试次数
-const MAX_SWIPE_TIMES = 30;
-const FIND_TIMEOUT = 3000;
+const MAX_RETRY = 3; // 查找福袋重试次数
+const MAX_SWIPE_TIMES = 10; // 无效滑动次数
+const FIND_TIMEOUT = 2000;
+const SLEEP_DURATION = 2000;
 const NIGHT_START_HOUR = 2; // 2点到6点间退出抖音
 const NIGHT_END_HOUR = 6;
+
+function sleepWithLog(duration) {
+	if (duration) {
+		log(`😴 休眠${duration / 1000}秒`);
+		sleep(duration);
+	} else {
+		log(`😴 休眠${SLEEP_DURATION / 1000}秒`);
+		sleep(SLEEP_DURATION);
+	}
+}
 
 function clickWithLog(x, y, msg) {
 	click(x, y);
 	log(`${msg}:${x},${y}`);
-	sleep(2000);
+	sleepWithLog();
 }
 
 function swipWithLog(x1, y1, x2, y2, duration, msg) {
 	log(`${msg}:${x1},${y1} -> ${x2},${y2}`);
 	swipe(x1, y1, x2, y2, duration);
-	sleep(2000);
+	sleepWithLog();
 }
 
-function swipUpDownWithLog(swipeDirection) {
-	let center_x = Math.floor(device.width * 0.8);
-	let y1 = Math.floor(device.height * 0.7);
-	let y2 = Math.floor(device.height * 0.4);
-	let duration = 100;
-
-	if (swipeDirection) {
-		swipWithLog(center_x, y2, center_x, y1, duration, "向下滑动");
-	} else {
-		swipWithLog(center_x, y1, center_x, y2, duration, "向上滑动");
-	}
-
-	sleep(3000);
+function swipUpWithLog() {
+	let center_x = Math.floor(screenWidth * 0.8);
+	let y1 = Math.floor(screenHeight * 0.8);
+	let y2 = Math.floor(screenHeight * 0.3);
+	let duration = 200;
+	swipWithLog(center_x, y1, center_x, y2, duration, "向上滑动");
+	sleepWithLog();
 }
 
 function clickBlankArea() {
-	clickWithLog(720, 540, "点击空白区域");
+	clickWithLog(720, 540, "🧿	点击空白区域");
 }
 
 function threeFingerScreenshot() {
-	let screenWidth = device.width;
-	let screenHeight = device.height;
-
 	let firstPoints = {
 		start: [Math.floor(screenWidth * 0.3), Math.floor(screenHeight * 0.5)],
 		end: [Math.floor(screenWidth * 0.3), Math.floor(screenHeight * 0.7)],
@@ -84,8 +86,8 @@ function threeFingerScreenshot() {
 			[thirdPoints.end[0], thirdPoints.end[1]],
 		]
 	);
-	sleep(2000);
-	log("截图完成");
+	sleepWithLog();
+	log("📱	截屏完成");
 	clickBlankArea();
 	const sourceDir = "/sdcard/Pictures/Screenshots";
 	const target = "/sdcard/DCIM/screenshot.jpg";
@@ -101,12 +103,16 @@ function threeFingerScreenshot() {
 
 // 2. 获取控件区域的主要颜色
 function isFudaiColor(element) {
+	let bounds = element.bounds();
+	if (!element || bounds.width() <= 0 || bounds.height() <= 0) {
+		return false;
+	}
 	let img = images.read("/sdcard/DCIM/screenshot.jpg");
 	if (!img) {
-		toast("截图读取失败");
+		toast("🚫	截图读取失败");
 		return;
 	}
-	let bounds = element.bounds();
+
 	// 裁剪控件区域图片
 	let clip = images.clip(
 		img,
@@ -190,7 +196,7 @@ function clickPopup() {
 	if (popup) {
 		let x = popup.bounds().centerX();
 		let y = popup.bounds().centerY();
-		clickWithLog(x, y, "关闭弹窗");
+		clickWithLog(x, y, "🍾	关闭弹窗");
 	}
 
 	clickBlankArea();
@@ -212,14 +218,14 @@ function getCountdownSeconds() {
 	// 添加调试信息
 	for (let index = 0; index < countdown.length; index++) {
 		let item = countdown[index];
-		log(`倒计时 ${index + 1}:`, item.text());
+		log(`⏰	倒计时 ${index + 1}:`, item.text());
 		let x = item.bounds().centerX();
 		let y = item.bounds().centerY();
-		log(`倒计时坐标:${x},${y}`);
+		log(`📌	倒计时坐标:${x},${y}`);
 	}
 
 	if (countdown.length !== 2) {
-		log("倒计时识别错误");
+		log("🚫	倒计时识别错误");
 		return -1;
 	}
 
@@ -242,16 +248,43 @@ function getPrizePrice() {
 		.findOne(FIND_TIMEOUT);
 
 	if (!prize) {
-		log("未找到参考价值");
+		log("🚫	未找到参考价值");
 		return -1;
 	}
 
 	let priceMatch = prize.text().match(/参考价值: ¥(\d+)/);
 	if (!priceMatch) {
-		log("参考价值格式不匹配");
+		log("🚫	参考价值格式不匹配");
 		return -1;
 	}
 	return parseInt(priceMatch[1], 10);
+}
+function joinFanClub() {
+	for (let i = 0; i < 2; i++) {
+		let fanClubButton = boundsInside(
+			POPUP_POS[0],
+			POPUP_POS[1],
+			POPUP_POS[2],
+			POPUP_POS[3]
+		)
+			.classNameMatches(
+				"(com\\.lynx\\.tasm\\.behavior\\.ui\\.text\\.FlattenUIText|com\\.lynx\\.tasm\\.behavior\\.ui\\.view\\.UIView|com\\.lynx\\.tasm\\.behavior\\.ui\\.LynxFlattenUI)"
+			)
+			.textMatches(".*加入粉丝团.*")
+			.findOne(FIND_TIMEOUT);
+
+		if (fanClubButton) {
+			let x = fanClubButton.bounds().centerX();
+			let y = fanClubButton.bounds().centerY();
+			clickWithLog(x, y, "❤️	加入粉丝团");
+			if (i === 1) {
+				return true;
+			}
+		} else {
+			break;
+		}
+	}
+	return false;
 }
 
 function search_fudai() {
@@ -274,21 +307,28 @@ function search_fudai() {
 		let item = fudai[i];
 		let x = item.bounds().centerX();
 		let y = item.bounds().centerY();
-		log(`福袋坐标:${x},${y}`);
+		log(`🎁	福袋坐标:${x},${y}`);
 		if (isFudaiColor(item)) {
-			clickWithLog(x, y, "点击福袋");
+			clickWithLog(x, y, "🎁	点击福袋");
 			// 获取开奖倒计时;
 			let lastCountdown = getCountdownSeconds();
 			if (lastCountdown === -1) {
 				continue;
 			}
-			log("福袋倒计时:", lastCountdown);
+			log("⏰	福袋倒计时:", lastCountdown);
 			// 获取奖品参考价值;
 			let prizePrice = getPrizePrice();
 			if (prizePrice === -1) {
 				continue;
 			}
-			log("奖品参考价值", prizePrice);
+			log("🎁	奖品参考价值", prizePrice);
+			// 奖品价值大于最小参考价值时,检查是否符合抽奖条件,不符合则尝试获取抽奖资格
+			if (prizePrice > PRIZE_PRICE_MIN) {
+				if (joinFanClub()) {
+					clickBlankArea();
+					clickWithLog(x, y, "🎁	点击福袋");
+				}
+			}
 			clickPopup();
 
 			return { x, y, lastCountdown, prizePrice };
@@ -313,24 +353,25 @@ function enterLiveRoom() {
 
 	// 点击关注列表
 	if (followBtn) {
-		log("找到关注按钮");
+		log("❤️	找到关注按钮");
 		let x = followBtn.bounds().centerX();
 		let y = followBtn.bounds().centerY();
 		clickWithLog(x, y, "点击关注");
 		swipWithLog(280, 432, 800, 432, 1000, "更新关注的直播");
 		clickWithLog(120, 400, "点击进入直播间");
 	} else {
-		log("未找到关注按钮");
+		log("💔	未找到关注按钮");
 	}
 }
 
 function exitApp() {
-	log("退出应用");
+	log("🚫	退出应用");
 	// 连续点击返回键多次以确保完全退出
 	for (let i = 0; i < 5; i++) {
 		back();
-		sleep(1000);
+		sleepWithLog(1000);
 	}
+	exit();
 }
 
 function getRoomName() {
@@ -345,33 +386,31 @@ function getRoomName() {
 // 等待开启无障碍权限
 auto.waitFor();
 
-setScreenMetrics(1080, 2376);
+const { screenWidth, screenHeight, isDebug } = hamibot.env;
+
+log(`📐	屏幕宽度:${screenWidth},高度:${screenHeight}`);
+setScreenMetrics(screenWidth, screenHeight);
 
 console.show();
-console.setPosition(0, 360);
-const screenWidth = device.width;
-const screenHeight = device.height;
-log(`屏幕宽度:${screenWidth},高度:${screenHeight}`);
-if (screenWidth <= 0 || screenHeight <= 0) {
-	toast("设备识别失败");
-	exit();
-}
+console.setPosition(0, 320);
+
 enterLiveRoom();
 let swipeTimes = 0; // 无效滑动次数
 let joinFailureTimes = 0; // 检测到福袋但是参与抽奖失败次数
 let lastRoom = "NO_SET";
-let swipeDirection = false;
+sleep(10000);
 while (true) {
 	clickPopup();
-	log(`无效滑动次数:${swipeTimes}`);
+	log(`🔄	无效滑动次数:${swipeTimes}`);
 	if (swipeTimes > MAX_SWIPE_TIMES) {
-		log(`无效滑动次数超:${MAX_SWIPE_TIMES}次,重新进入直播间`);
+		log(`🔄	无效滑动次数超:${MAX_SWIPE_TIMES}次,重新进入直播间`);
 		back();
 		enterLiveRoom();
+		swipeTimes = 0;
 	}
 
 	let now = new Date();
-	log(`当前时间:${now.getHours()}:${now.getMinutes()}`);
+	log(`⏰ 当前时间:${now.getHours()}:${now.getMinutes()}`);
 	if (
 		now.getHours() >= NIGHT_START_HOUR &&
 		now.getHours() <= NIGHT_END_HOUR
@@ -382,39 +421,32 @@ while (true) {
 
 	let room = getRoomName();
 	log(`🏠 当前直播间:${room},上一个直播间:${lastRoom}`);
-	if (room == lastRoom) {
-		log(
-			`"🔃 切换滑动方向:{'UP->DOWN' if self.swipe_duration else 'DOWN->UP'}`
-		);
-		swipeDirection = !swipeDirection;
-	} else {
-		lastRoom = room;
-	}
+	lastRoom = room;
 
 	let fudai = search_fudai();
 	let tryCount = 1;
 
 	while (!fudai && tryCount < MAX_RETRY) {
 		tryCount++;
-		log(`未找到福袋，重试第${tryCount}次`);
+		log(`👀	未找到福袋，重试第${tryCount}次`);
 		fudai = search_fudai();
 	}
 
 	if (fudai) {
 		if (fudai.prizePrice < PRIZE_PRICE_MIN) {
-			log(`奖品价值小于:${PRIZE_PRICE_MIN},划走`);
+			log(`📤	奖品价值小于:${PRIZE_PRICE_MIN},划走`);
 			swipeTimes += 1;
-			swipUpDownWithLog(swipeDirection);
+			swipUpWithLog();
 			continue;
 		}
 		if (fudai.lastCountdown > MAX_WAIT_TIME) {
-			log(`倒计时大于:${MAX_WAIT_TIME}秒,划走`);
+			log(`📤	倒计时大于:${MAX_WAIT_TIME}秒,划走`);
 			swipeTimes += 1;
-			swipUpDownWithLog(swipeDirection);
+			swipUpWithLog();
 			continue;
 		}
 
-		clickWithLog(fudai.x, fudai.y, "点击福袋");
+		clickWithLog(fudai.x, fudai.y, "🎁	点击福袋");
 		// 查看是否成功参与抽奖
 		let success = boundsInside(
 			JOINED_POS[0],
@@ -429,24 +461,23 @@ while (true) {
 		clickPopup();
 
 		if (success) {
-			log(`抽奖成功,等待:${fudai.lastCountdown}秒`);
+			log(`🎉	抽奖成功,等待:${fudai.lastCountdown}秒`);
 			swipeTimes = 0;
 			joinFailureTimes = 0;
 			lastRoom = "NO_SET";
 			sleep(fudai.lastCountdown * 1000);
 		} else {
-			log("检测到福袋,但参与抽奖失败");
+			log("😥	检测到福袋,但参与抽奖失败");
 			swipeTimes += 1;
 			joinFailureTimes += 1;
 			if (joinFailureTimes >= MAX_RETRY) {
 				joinFailureTimes = 0;
-				swipUpDownWithLog(swipeDirection);
+				swipUpWithLog();
 			}
 		}
 	} else {
-		log("未找到福袋,划走");
+		log("😥	未找到福袋,划走");
 		swipeTimes += 1;
-		swipUpDownWithLog(swipeDirection);
+		swipUpWithLog();
 	}
 }
-sleep(30 * 1000);
