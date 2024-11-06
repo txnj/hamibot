@@ -33,7 +33,7 @@ function clickBlankArea() {
 	clickWithLog(720, 540, "🧿	点击空白区域");
 }
 
-function threeFingerScreenshot() {
+function threeFingerScreenshot(target) {
 	let firstPoints = {
 		start: [Math.floor(screenWidth * 0.3), Math.floor(screenHeight * 0.5)],
 		end: [Math.floor(screenWidth * 0.3), Math.floor(screenHeight * 0.7)],
@@ -73,7 +73,7 @@ function threeFingerScreenshot() {
 	log("📱	截屏完成");
 	clickBlankArea();
 	const sourceDir = "/sdcard/Pictures/Screenshots";
-	const target = "/sdcard/DCIM/screenshot.jpg";
+
 	let fileList = files.listDir(sourceDir, function (filename) {
 		return (
 			/\.jpg$/.test(filename) &&
@@ -160,6 +160,10 @@ function isFudaiColor(element) {
 	return colors.isSimilar(avgColorRGB, FUDAI_COLOR, 4);
 }
 
+function getTimestamp() {
+	return new Date().getTime(); // 返回毫秒级时间戳
+}
+
 function clickPopup() {
 	let popup = boundsInside(
 		POPUP_POS[0],
@@ -177,6 +181,9 @@ function clickPopup() {
 		.findOne(FIND_TIMEOUT);
 
 	if (popup) {
+		if (popup.text() === "领取奖品") {
+			threeFingerScreenshot(`/sdcard/DCIM/中奖-${getTimestamp()}.jpg`);
+		}
 		let x = popup.bounds().centerX();
 		let y = popup.bounds().centerY();
 		clickWithLog(x, y, "🍾	关闭弹窗");
@@ -284,7 +291,7 @@ function search_fudai() {
 		.text("")
 		.find();
 
-	threeFingerScreenshot();
+	threeFingerScreenshot("/sdcard/DCIM/screenshot.jpg");
 
 	for (let i = 0; i < fudai.length; i++) {
 		let item = fudai[i];
