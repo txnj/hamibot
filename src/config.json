@@ -1,19 +1,27 @@
 [
 	{
+		"label": "显示控制台(需要悬浮窗权限)",
+		"type": "checkbox",
+		"name": "isDebug"
+	},
+	{
 		"label": "屏幕分辨率(宽)",
 		"name": "screenWidth",
-		"placeholder": "1080",
-		"validation": "required"
+		"placeholder": "1080"
 	},
 	{
 		"label": "屏幕分辨率(高)",
 		"name": "screenHeight",
-		"placeholder": "2376",
-		"validation": "required"
+		"placeholder": "2376"
 	},
 	{
-		"label": "显示控制台(需要悬浮窗权限)",
-		"type": "checkbox",
-		"name": "isDebug"
+		"label": "奖品最低价值,大于此值才会参与抽奖(元)",
+		"name": "PRIZE_PRICE_MIN",
+		"placeholder": "600"
+	},
+	{
+		"label": "抽奖倒计时小于此值参与抽奖,否则划走(秒)",
+		"name": "MAX_WAIT_TIME",
+		"placeholder": "300"
 	}
 ]
