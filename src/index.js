@@ -1,18 +1,3 @@
-const FUDAI_COLOR = colors.rgb(248, 158, 186);
-const FUDAI_POS = [36, 360, 600, 468]; // 福袋按钮区域
-const COUNTDOWN_POS = [0, 1083, 1080, 1662]; // 倒计时区域
-const POPUP_POS = [0, 800, 1080, 2376]; // 弹窗区域
-const PRIZE_POS = [48, 1335, 1032, 1779]; // 奖品参考价值区域
-const JOINED_POS = [48, 2112, 1032, 2376]; // 检查是否成功参与抽奖
-const ROOM_LIST_POS = [0, 264, 1080, 600]; // 检查是否成功参与抽奖
-const TOP_LIST_POS = [0, 120, 1080, 252]; // 顶部列表
-const MAX_RETRY = 3; // 查找福袋重试次数
-const MAX_SWIPE_TIMES = 10; // 无效滑动次数
-const FIND_TIMEOUT = 2000;
-const SLEEP_DURATION = 2000;
-const NIGHT_START_HOUR = 2; // 2点到6点间退出抖音
-const NIGHT_END_HOUR = 6;
-
 function sleepWithLog(duration) {
 	if (duration) {
 		log(`😴 休眠${duration / 1000}秒`);
@@ -337,7 +322,14 @@ function search_fudai() {
 }
 
 function enterLiveRoom() {
-	swipWithLog(750, 180, 200, 180, 2000, "尝试滑动顶部列表");
+	swipWithLog(
+		TOP_LIST_SWIPE.START_X,
+		TOP_LIST_SWIPE.START_Y,
+		TOP_LIST_SWIPE.END_X,
+		TOP_LIST_SWIPE.END_Y,
+		TOP_LIST_SWIPE.DURATION,
+		"尝试滑动顶部列表"
+	);
 	let followBtn = boundsInside(
 		TOP_LIST_POS[0],
 		TOP_LIST_POS[1],
@@ -355,8 +347,15 @@ function enterLiveRoom() {
 		let x = followBtn.bounds().centerX();
 		let y = followBtn.bounds().centerY();
 		clickWithLog(x, y, "点击关注");
-		swipWithLog(280, 432, 800, 432, 1000, "更新关注的直播");
-		clickWithLog(120, 400, "点击进入直播间");
+		swipWithLog(
+			FOLLOW_LIST_SWIPE.START_X,
+			FOLLOW_LIST_SWIPE.START_Y,
+			FOLLOW_LIST_SWIPE.END_X,
+			FOLLOW_LIST_SWIPE.END_Y,
+			FOLLOW_LIST_SWIPE.DURATION,
+			"更新关注的直播"
+		);
+		clickWithLog(ENTER_LIVE_POS.X, ENTER_LIVE_POS.Y, "点击进入直播间");
 	} else {
 		log("💔	未找到关注按钮");
 	}
@@ -367,7 +366,7 @@ function exitApp() {
 	// 连续点击返回键多次以确保完全退出
 	for (let i = 0; i < 5; i++) {
 		back();
-		sleepWithLog(1000);
+		sleepWithLog(500);
 	}
 	exit();
 }
@@ -383,20 +382,61 @@ function getRoomName() {
 // main
 // 等待开启无障碍权限
 auto.waitFor();
-
 const screenWidth = hamibot.env.screenWidth || 1080;
 const screenHeight = hamibot.env.screenHeight || 2376;
-const isDebug = hamibot.env.isDebug || true;
+log(`⚙️	屏幕宽度:${screenWidth},高度:${screenHeight}`);
+setScreenMetrics(screenWidth, screenHeight);
+const isDebug = hamibot.env.isDebug === undefined ? true : hamibot.env.isDebug;
 const PRIZE_PRICE_MIN = hamibot.env.PRIZE_PRICE_MIN || 600;
 const MAX_WAIT_TIME = hamibot.env.MAX_WAIT_TIME || 300;
-
-log(`📐	屏幕宽度:${screenWidth},高度:${screenHeight}`);
-setScreenMetrics(screenWidth, screenHeight);
+const MAX_SWIPE_TIMES = hamibot.env.MAX_SWIPE_TIMES || 20; // 无效滑动次数,达到这个值后会重新进入直播间
+const [NIGHT_START_HOUR, NIGHT_END_HOUR] = (hamibot.env.START_END_HOUR || "2-6")
+	.split("-")
+	.map(Number);
 
 if (isDebug) {
 	console.show();
-	console.setPosition(0, 320);
+	sleepWithLog(5000);
+	console.setSize(
+		Math.floor(screenWidth * 0.5),
+		Math.floor(screenWidth * 0.6)
+	);
+	console.setPosition(0, Math.floor(screenHeight * 0.14));
 }
+// -----
+const FUDAI_COLOR = colors.rgb(248, 158, 186);
+const FUDAI_POS = [36, 360, 600, 468]; // 福袋按钮区域
+const COUNTDOWN_POS = [0, 1083, 1080, 1662]; // 倒计时区域
+const POPUP_POS = [0, 800, 1080, 2376]; // 弹窗区域
+const PRIZE_POS = [48, 1335, 1032, 1779]; // 奖品参考价值区域
+const JOINED_POS = [48, 2112, 1032, 2376]; // 检查是否成功参与抽奖
+const ROOM_LIST_POS = [0, 264, 1080, 600]; // 检查是否成功参与抽奖
+const TOP_LIST_POS = [0, 120, 1080, 252]; // 顶部列表
+const MAX_RETRY = 3; // 查找福袋重试次数
+const FIND_TIMEOUT = 2000;
+const SLEEP_DURATION = 2000;
+const TOP_LIST_SWIPE = {
+	//滑动顶部列表坐标
+	START_X: 750,
+	START_Y: 180,
+	END_X: 200,
+	END_Y: 180,
+	DURATION: 2000,
+};
+
+const FOLLOW_LIST_SWIPE = {
+	// 关注列表滑动更新坐标
+	START_X: 280,
+	START_Y: 432,
+	END_X: 800,
+	END_Y: 432,
+	DURATION: 2000,
+};
+const ENTER_LIVE_POS = {
+	// 进入直播间坐标
+	X: 120,
+	Y: 400,
+};
 
 enterLiveRoom();
 let swipeTimes = 0; // 无效滑动次数

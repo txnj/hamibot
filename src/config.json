@@ -2,7 +2,8 @@
 	{
 		"label": "显示控制台(需要悬浮窗权限)",
 		"type": "checkbox",
-		"name": "isDebug"
+		"name": "isDebug",
+		"default": true
 	},
 	{
 		"label": "屏幕分辨率(宽)",
@@ -23,5 +24,15 @@
 		"label": "抽奖倒计时小于此值参与抽奖,否则划走(秒)",
 		"name": "MAX_WAIT_TIME",
 		"placeholder": "300"
+	},
+	{
+		"label": "最大无效滑动次数,达到这个值后会重新进入直播间",
+		"name": "MAX_SWIPE_TIMES",
+		"placeholder": "20"
+	},
+	{
+		"label": "此值期间退出抖音,不参与抽奖(默认为2点到6点)",
+		"name": "START_END_HOUR",
+		"placeholder": "2-6"
 	}
 ]
