@@ -323,11 +323,11 @@ function search_fudai() {
 
 function enterLiveRoom() {
 	swipWithLog(
-		TOP_LIST_SWIPE.START_X,
-		TOP_LIST_SWIPE.START_Y,
-		TOP_LIST_SWIPE.END_X,
-		TOP_LIST_SWIPE.END_Y,
-		TOP_LIST_SWIPE.DURATION,
+		TOP_LIST_SWIPE[0], // START_X
+		TOP_LIST_SWIPE[1], // START_Y
+		TOP_LIST_SWIPE[2], // END_X
+		TOP_LIST_SWIPE[3], // END_Y
+		TOP_LIST_SWIPE[4], // DURATION
 		"尝试滑动顶部列表"
 	);
 	let followBtn = boundsInside(
@@ -348,14 +348,14 @@ function enterLiveRoom() {
 		let y = followBtn.bounds().centerY();
 		clickWithLog(x, y, "点击关注");
 		swipWithLog(
-			FOLLOW_LIST_SWIPE.START_X,
-			FOLLOW_LIST_SWIPE.START_Y,
-			FOLLOW_LIST_SWIPE.END_X,
-			FOLLOW_LIST_SWIPE.END_Y,
-			FOLLOW_LIST_SWIPE.DURATION,
+			FOLLOW_LIST_SWIPE[0], // START_X
+			FOLLOW_LIST_SWIPE[1], // START_Y
+			FOLLOW_LIST_SWIPE[2], // END_X
+			FOLLOW_LIST_SWIPE[3], // END_Y
+			FOLLOW_LIST_SWIPE[4], // DURATION
 			"更新关注的直播"
 		);
-		clickWithLog(ENTER_LIVE_POS.X, ENTER_LIVE_POS.Y, "点击进入直播间");
+		clickWithLog(ENTER_LIVE_POS[0], ENTER_LIVE_POS[1], "点击进入直播间");
 	} else {
 		log("💔	未找到关注按钮");
 	}
@@ -409,34 +409,14 @@ const FUDAI_POS = [36, 360, 600, 468]; // 福袋按钮区域
 const COUNTDOWN_POS = [0, 1083, 1080, 1662]; // 倒计时区域
 const POPUP_POS = [0, 800, 1080, 2376]; // 弹窗区域
 const PRIZE_POS = [48, 1335, 1032, 1779]; // 奖品参考价值区域
-const JOINED_POS = [48, 2112, 1032, 2376]; // 检查是否成功参与抽奖
-const ROOM_LIST_POS = [0, 264, 1080, 600]; // 检查是否成功参与抽奖
+const JOINED_POS = [48, 2112, 1032, 2376];
 const TOP_LIST_POS = [0, 120, 1080, 252]; // 顶部列表
+const ENTER_LIVE_POS = [120, 400]; // 进入直播间坐标
+const TOP_LIST_SWIPE = [750, 180, 200, 180, 2000]; //滑动顶部列表坐标
+const FOLLOW_LIST_SWIPE = [280, 432, 800, 432, 2000]; // 关注列表滑动更新坐标
 const MAX_RETRY = 3; // 查找福袋重试次数
 const FIND_TIMEOUT = 2000;
 const SLEEP_DURATION = 2000;
-const TOP_LIST_SWIPE = {
-	//滑动顶部列表坐标
-	START_X: 750,
-	START_Y: 180,
-	END_X: 200,
-	END_Y: 180,
-	DURATION: 2000,
-};
-
-const FOLLOW_LIST_SWIPE = {
-	// 关注列表滑动更新坐标
-	START_X: 280,
-	START_Y: 432,
-	END_X: 800,
-	END_Y: 432,
-	DURATION: 2000,
-};
-const ENTER_LIVE_POS = {
-	// 进入直播间坐标
-	X: 120,
-	Y: 400,
-};
 
 enterLiveRoom();
 let swipeTimes = 0; // 无效滑动次数
