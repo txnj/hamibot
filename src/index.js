@@ -403,7 +403,7 @@ if (isDebug) {
 	);
 	console.setPosition(0, Math.floor(screenHeight * 0.14));
 }
-// -----
+// 📝📝📝📝📝分辨率不一样可能需要配置以下内容
 const FUDAI_COLOR = colors.rgb(248, 158, 186);
 const FUDAI_POS = [36, 360, 600, 468]; // 福袋按钮区域
 const COUNTDOWN_POS = [0, 1083, 1080, 1662]; // 倒计时区域
