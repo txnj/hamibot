@@ -12,5 +12,5 @@
 
 ## 🚀 使用方法
 
-1. [hamibot 官网文档](https://docs.hamibot.com/reference/widgetsBasedAutomation)
+1. 使用脚本参考文档 [hamibot 官网文档](https://docs.hamibot.com/reference/widgetsBasedAutomation)
 2. 使用指令 `上传并运行标记的脚本文件` 来调试代码,也可以`发布脚本`然后下载运行
