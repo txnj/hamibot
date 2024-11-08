@@ -176,7 +176,7 @@ function clickPopup() {
 		)
 		.clickable(true)
 		.textMatches(
-			"(一键发表评论|参与抽奖|知道了|我知道了|领取奖品|立即用券|关闭，按钮|关闭)"
+			"(一键发表评论|参与抽奖|知道了|我知道了|.*领取奖品.*|立即用券|关闭，按钮|关闭)"
 		)
 		.findOne(FIND_TIMEOUT);
 
